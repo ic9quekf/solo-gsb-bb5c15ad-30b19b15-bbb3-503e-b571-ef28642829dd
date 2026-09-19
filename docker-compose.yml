@@ -1,0 +1,13 @@
+services:
+  web:
+    build: .
+    image: photo-planar-ruler:latest
+    container_name: photo-planar-ruler
+    ports:
+      - "8000:8000"
+    volumes:
+      - uploads_data:/srv/app/app/uploads
+    restart: unless-stopped
+
+volumes:
+  uploads_data:

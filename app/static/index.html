@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>平面照片标尺校准</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>平面照片标尺校准</h1>
+    <div class="topbar-actions">
+      <label class="btn primary" id="upload-label">
+        <input type="file" id="file-input" accept="image/*" hidden />
+        打开照片
+      </label>
+      <button class="btn" id="reset-view-btn" title="缩放与视图复位" disabled>视图复位</button>
+      <button class="btn" id="export-btn" disabled>导出测量 JSON</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- 左侧：步骤控制 -->
+    <aside class="sidebar">
+      <section class="panel">
+        <h2>1 · 标定矩形</h2>
+        <p class="hint">
+          在照片上按 <strong>左上 → 右上 → 右下 → 左下</strong> 的顺序
+          点击已知实际尺寸矩形的四个角。
+        </p>
+        <div class="field">
+          <label for="ref-w">矩形实际宽度（米）</label>
+          <input type="number" id="ref-w" value="1.0" min="0" step="0.001" />
+        </div>
+        <div class="field">
+          <label for="ref-h">矩形实际高度（米）</label>
+          <input type="number" id="ref-h" value="1.0" min="0" step="0.001" />
+        </div>
+        <div class="btn-row">
+          <button class="btn small" id="clear-corners-btn" disabled>清除四点</button>
+        </div>
+        <div class="status" id="calib-status">尚未标记角点（0/4）</div>
+      </section>
+
+      <section class="panel">
+        <h2>2 · 绘制测量区域</h2>
+        <p class="hint">
+          校准完成后，在画布上单击添加多边形顶点；
+          <strong>双击</strong>（或点击带 ✓ 的首顶点）闭合。可绘制多个区域，随时拖动顶点微调。
+        </p>
+        <div class="field">
+          <label for="poly-name">区域名称</label>
+          <input type="text" id="poly-name" placeholder="如：A 区" />
+        </div>
+        <div class="btn-row">
+          <button class="btn small primary" id="new-poly-btn" disabled>新建区域</button>
+          <button class="btn small danger" id="redraw-poly-btn" disabled>重画选中区域</button>
+          <button class="btn small danger" id="delete-poly-btn" disabled>删除选中区域</button>
+        </div>
+      </section>
+
+      <section class="panel regions-panel">
+        <h2>3 · 测量结果</h2>
+        <ul class="region-list" id="region-list"></ul>
+        <p class="empty-tip" id="region-empty">暂无区域</p>
+      </section>
+    </aside>
+
+    <!-- 右侧：画布 -->
+    <section class="canvas-wrap" id="canvas-wrap">
+      <canvas id="canvas"></canvas>
+      <div class="overlay" id="drop-overlay">
+        <div class="drop-card">
+          <p>点击右上角<strong>「打开照片」</strong>，或将本地照片拖放到此处</p>
+          <p class="sub">支持 JPG / PNG / WebP / BMP，最大 25 MiB</p>
+        </div>
+      </div>
+      <div class="toast" id="toast" hidden></div>
+      <div class="zoom-hud" id="zoom-hud" hidden>
+        <button class="hud-btn" id="zoom-out-btn" title="缩小">−</button>
+        <span id="zoom-level">100%</span>
+        <button class="hud-btn" id="zoom-in-btn" title="放大">+</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
